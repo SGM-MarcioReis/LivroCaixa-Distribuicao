@@ -1,6 +1,9 @@
 {
-    "Versao": "1.0.0.1",
-    "url": "https://github.com/SGM-MarcioReis/LivroCaixa-Distribuicao/releases/download/v1.0.0.1/ControleFinanceiro_1.0.0.1_Setup.exe",
-    "changelog": "Versão inicial do Controle Financeiro Livro Caixa",
-    "sha256": ""
+  "Versao": "1.0.0.1",
+  "url": "https://github.com/SGM-MarcioReis/LivroCaixa-Distribuicao/releases/download/v1.0.0.1/ControleFinanceiro_1.0.0.1_Setup.exe",
+  "changelog": "📋 Novidades nesta versão:\n\n✅ Relatório de Prestação de Contas\n✅ Cabeçalho repetido em todas as páginas\n✅ Cards com resumo dos meses\n✅ Fonte e cores ajustadas\n✅ PDF salvo automaticamente na pasta\n\n🛠 Melhorias:\n• Instalação com imagens personalizadas\n• Backup em Meus Documentos\n• Sistema de atualização automática",
+  "sha256": "9628913cf68ce3a7cfacac81c1ace46acfff57d828f5953050eb9447a8213e59",
+  "tamanho": 17825792,
+  "obrigatoria": false,
+  "dataPublicacao": "2026-10-03"
 }
