@@ -1,0 +1,58 @@
+@page "/relatorios"
+@using Microsoft.Data.Sqlite
+
+<PageTitle>📊 Relatórios</PageTitle>
+
+<div class="container-fluid px-3 py-3">
+    <h4 class="mb-4">📊 Relatório Financeiro</h4>
+
+    <div class="card card-cinza p-3">
+        @if (resumoMes.Any())
+        {
+            foreach (var item in resumoMes)
+            {
+                <div class="item-linha d-flex justify-content-between align-items-center">
+                    <span>@item.Mes</span>
+                    <strong style="color:@(item.Total >= 0 ? "#198754" : "#dc3545")">@item.Total.ToString("C")</strong>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted text-center py-3">Nenhum dado para relatório.</p>
+        }
+    </div>
+</div>
+
+@code {
+    private List<ResumoMes> resumoMes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var conn = new SqliteConnection(ConexaoDB.ConnectionString);
+        await conn.OpenAsync();
+
+        var cmd = new SqliteCommand(@"
+            SELECT strftime('%Y-%m', DataLancamento) AS Mes,
+                   SUM(CASE WHEN Tipo = 'ENTRADA' THEN Valor ELSE -Valor END) AS Total
+            FROM Lancamentos
+            GROUP BY strftime('%Y-%m', DataLancamento)
+            ORDER BY Mes DESC", conn);
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            resumoMes.Add(new ResumoMes
+            {
+                Mes = reader.GetString(0),
+                Total = reader.GetDecimal(1)
+            });
+        }
+    }
+
+    private class ResumoMes
+    {
+        public string Mes { get; set; } = string.Empty;
+        public decimal Total { get; set; }
+    }
+}

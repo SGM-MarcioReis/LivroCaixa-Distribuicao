@@ -1,0 +1,320 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f5f7f6;
+    color: #212529;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: #212529;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-area {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    height: 64px;
+    background: white;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.topbar-icon {
+    font-size: 1.3rem;
+}
+
+.topbar-version {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.content-area {
+    flex: 1;
+    padding: 28px;
+}
+
+.menu-header {
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.menu-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #198754;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+}
+
+.menu-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.menu-title small {
+    display: block;
+    margin-top: 2px;
+    color: #adb5bd;
+    font-size: 0.72rem;
+    font-weight: 400;
+}
+
+.menu-nav {
+    padding: 18px 12px 0;
+    flex: 1;
+}
+
+.menu-section {
+    padding: 14px 12px 7px;
+    color: #868e96;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 46px;
+    padding: 0 12px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    color: #ced4da;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.menu-link:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: white;
+}
+
+.menu-link.active {
+    background: #198754;
+    color: white;
+    font-weight: 600;
+}
+
+.menu-icon {
+    width: 24px;
+    text-align: center;
+    font-size: 1.05rem;
+}
+
+.menu-footer {
+    padding: 18px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #adb5bd;
+    font-size: 0.8rem;
+}
+
+.menu-footer small {
+    color: #6c757d;
+}
+
+.card {
+    border-radius: 12px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card-verde {
+    background: linear-gradient(135deg, #198754, #157347);
+    color: white;
+}
+
+.card-vermelho {
+    background: linear-gradient(135deg, #dc3545, #bb2d3b);
+    color: white;
+}
+
+.card-azul {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    color: white;
+}
+
+.card-cinza {
+    background: #f8f9fa;
+    color: #212529;
+}
+
+.valor {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.item-linha {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.form-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-azul {
+    background: #0d6efd;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.btn-acao {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background: #ddd;
+    color: #333;
+}
+
+.btn-entrada {
+    background: #198754;
+    color: white;
+}
+
+.btn-saida {
+    background: #dc3545;
+    color: white;
+}
+
+.linha {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.lista-card {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+#blazor-error-ui {
+    background: #fff3cd;
+    bottom: 0;
+    box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.15);
+    display: none;
+    left: 0;
+    padding: 0.75rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 210px;
+        min-width: 210px;
+    }
+
+    .content-area {
+        padding: 18px;
+    }
+
+    .topbar {
+        padding: 0 18px;
+    }
+}
+
+@media (max-width: 576px) {
+    .app-layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .menu-footer {
+        display: none;
+    }
+
+    .content-area {
+        padding: 15px;
+    }
+}

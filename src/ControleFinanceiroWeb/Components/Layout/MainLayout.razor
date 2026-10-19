@@ -1,0 +1,27 @@
+@inherits LayoutComponentBase
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <NavMenu />
+    </aside>
+
+    <div class="main-area">
+        <header class="topbar">
+            <div class="topbar-title">
+                <span class="topbar-icon">📒</span>
+                <span>Livro Caixa</span>
+            </div>
+            <div class="topbar-version">Versão 1.0</div>
+        </header>
+
+        <main class="content-area">
+            @Body
+        </main>
+    </div>
+</div>
+
+<div id="blazor-error-ui" role="alert">
+    Ocorreu um erro inesperado.
+    <a href="/" class="reload">Recarregar</a>
+    <a href="/" class="dismiss" aria-label="Fechar erro">🗙</a>
+</div>

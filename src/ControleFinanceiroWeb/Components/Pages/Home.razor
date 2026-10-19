@@ -1,0 +1,105 @@
+@page "/"
+@using Microsoft.Data.Sqlite
+
+<PageTitle>📒 Livro Caixa</PageTitle>
+
+<div class="container-fluid px-3">
+    <h4 class="mt-3 mb-4">📊 Resumo Financeiro</h4>
+
+    <div class="row g-3">
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card card-verde">
+                <div>Entradas</div>
+                <div class="valor">@totalEntradas.ToString("C")</div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card card-vermelho">
+                <div>Saídas</div>
+                <div class="valor">@totalSaidas.ToString("C")</div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card card-azul">
+                <div>Saldo</div>
+                <div class="valor">@saldo.ToString("C")</div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card card-cinza">
+                <div>Últimos lançamentos</div>
+                <div style="font-size:1.2rem; font-weight:bold;">@ultimos.Count</div>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mt-4 mb-3">📋 Últimos Lançamentos</h5>
+    <div class="card card-cinza p-3">
+        @if (ultimos.Any())
+        {
+            foreach (var l in ultimos)
+            {
+                <div class="item-linha d-flex justify-content-between gap-3">
+                    <span>@l.DataLancamento.ToString("dd/MM") — @l.Descricao</span>
+                    <span style="font-weight:bold; color:@(l.Tipo == "ENTRADA" ? "#198754" : "#dc3545")">
+                        @(l.Tipo == "ENTRADA" ? "+" : "-") @l.Valor.ToString("C")
+                    </span>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted text-center py-3">Nenhum lançamento ainda. Cadastre o primeiro!</p>
+        }
+    </div>
+</div>
+
+@code {
+    private decimal totalEntradas;
+    private decimal totalSaidas;
+    private decimal saldo;
+    private List<Lancamento> ultimos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarResumoAsync();
+    }
+
+    private Task CarregarResumoAsync()
+    {
+        using var conn = new SqliteConnection(ConexaoDB.ConnectionString);
+        conn.Open();
+
+        var cmdEntradas = new SqliteCommand("SELECT COALESCE(SUM(Valor), 0) FROM Lancamentos WHERE Tipo = 'ENTRADA'", conn);
+        totalEntradas = Convert.ToDecimal(cmdEntradas.ExecuteScalar());
+
+        var cmdSaidas = new SqliteCommand("SELECT COALESCE(SUM(Valor), 0) FROM Lancamentos WHERE Tipo = 'SAÍDA'", conn);
+        totalSaidas = Convert.ToDecimal(cmdSaidas.ExecuteScalar());
+
+        saldo = totalEntradas - totalSaidas;
+
+        var cmdUltimos = new SqliteCommand(@"
+            SELECT Id, DataLancamento, Tipo, Descricao, Valor
+            FROM Lancamentos
+            ORDER BY DataLancamento DESC, Id DESC
+            LIMIT 10", conn);
+
+        using var reader = cmdUltimos.ExecuteReader();
+        while (reader.Read())
+        {
+            ultimos.Add(new Lancamento
+            {
+                Id = reader.GetInt32(0),
+                DataLancamento = DateTime.Parse(reader.GetString(1)),
+                Tipo = reader.GetString(2),
+                Descricao = reader.GetString(3),
+                Valor = reader.GetDecimal(4)
+            });
+        }
+
+        return Task.CompletedTask;
+    }
+}

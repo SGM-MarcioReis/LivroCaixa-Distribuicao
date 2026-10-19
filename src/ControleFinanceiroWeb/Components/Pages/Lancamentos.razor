@@ -1,0 +1,129 @@
+@page "/lancamentos"
+@using Microsoft.Data.Sqlite
+
+<PageTitle>📝 Lançamentos</PageTitle>
+
+<div class="container-fluid px-3 py-3">
+    <h4 class="text-center mb-4">📝 Novo Lançamento</h4>
+
+    <div class="form-card">
+        <div class="d-flex gap-2 mb-4">
+            <button type="button" class="btn-acao @(tipoSelecionado == "ENTRADA" ? "btn-entrada" : "")" @onclick="() => tipoSelecionado = \"ENTRADA\"">
+                📈 Entrada
+            </button>
+            <button type="button" class="btn-acao @(tipoSelecionado == "SAÍDA" ? "btn-saida" : "")" @onclick="() => tipoSelecionado = \"SAÍDA\"">
+                📉 Saída
+            </button>
+        </div>
+
+        <label class="form-label">Data</label>
+        <input type="date" class="form-control" @bind="dataSelecionada" />
+
+        <label class="form-label">Categoria</label>
+        <input type="text" class="form-control" placeholder="Ex: Doação, Mensalidade..." @bind="categoria" />
+
+        <label class="form-label">Descrição</label>
+        <input type="text" class="form-control" placeholder="Detalhe do lançamento" @bind="descricao" />
+
+        <label class="form-label">Valor</label>
+        <input type="number" step="0.01" class="form-control" placeholder="0,00" @bind="valor" />
+
+        <button type="button" class="btn btn-azul" @onclick="Salvar">💾 Salvar Lançamento</button>
+
+        @if (!string.IsNullOrEmpty(mensagem))
+        {
+            <p style="color:@(mensagem.Contains("sucesso") ? "green" : "red"); text-align:center; margin-top:10px;">@mensagem</p>
+        }
+    </div>
+
+    <h5 class="mt-5 mb-3 text-center">📋 Últimos Lançamentos</h5>
+    <div class="lista-card">
+        @foreach (var l in lista)
+        {
+            <div class="linha d-flex justify-content-between align-items-center">
+                <div>
+                    <div style="font-weight:600;">@l.DataLancamento.ToString("dd/MM/yyyy")</div>
+                    <div style="color:#666; font-size:0.9rem;">@l.Categoria — @l.Descricao</div>
+                </div>
+                <div style="font-weight:bold; font-size:1.1rem; color:@(l.Tipo == "ENTRADA" ? "#198754" : "#dc3545")">
+                    @(l.Tipo == "ENTRADA" ? "+" : "-") @l.Valor.ToString("C")
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string tipoSelecionado = "ENTRADA";
+    private DateTime dataSelecionada = DateTime.Today;
+    private string categoria = string.Empty;
+    private string descricao = string.Empty;
+    private decimal valor;
+    private string mensagem = string.Empty;
+    private List<Lancamento> lista = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarListaAsync();
+    }
+
+    private Task CarregarListaAsync()
+    {
+        lista.Clear();
+
+        using var conn = new SqliteConnection(ConexaoDB.ConnectionString);
+        conn.Open();
+
+        var cmd = new SqliteCommand(@"
+            SELECT DataLancamento, Tipo, Categoria, Descricao, Valor
+            FROM Lancamentos
+            ORDER BY DataLancamento DESC, Id DESC
+            LIMIT 20", conn);
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            lista.Add(new Lancamento
+            {
+                DataLancamento = DateTime.Parse(reader.GetString(0)),
+                Tipo = reader.GetString(1),
+                Categoria = reader.GetString(2),
+                Descricao = reader.GetString(3),
+                Valor = reader.GetDecimal(4)
+            });
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private async Task Salvar()
+    {
+        if (string.IsNullOrWhiteSpace(categoria) || string.IsNullOrWhiteSpace(descricao) || valor <= 0)
+        {
+            mensagem = "Preencha todos os campos corretamente!";
+            return;
+        }
+
+        using var conn = new SqliteConnection(ConexaoDB.ConnectionString);
+        await conn.OpenAsync();
+
+        var cmd = new SqliteCommand(@"
+            INSERT INTO Lancamentos (DataLancamento, Tipo, Categoria, Descricao, Valor)
+            VALUES (@data, @tipo, @categoria, @descricao, @valor)", conn);
+
+        cmd.Parameters.AddWithValue("@data", dataSelecionada.ToString("yyyy-MM-dd"));
+        cmd.Parameters.AddWithValue("@tipo", tipoSelecionado);
+        cmd.Parameters.AddWithValue("@categoria", categoria);
+        cmd.Parameters.AddWithValue("@descricao", descricao);
+        cmd.Parameters.AddWithValue("@valor", valor);
+
+        await cmd.ExecuteNonQueryAsync();
+
+        mensagem = "✅ Lançamento salvo com sucesso!";
+        categoria = string.Empty;
+        descricao = string.Empty;
+        valor = 0;
+
+        await CarregarListaAsync();
+    }
+}
